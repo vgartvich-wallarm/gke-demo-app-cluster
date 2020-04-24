@@ -1,0 +1,40 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  concurrencyPolicy: Replace
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      completions: 1
+      manualSelector: false
+      parallelism: 1
+      template:
+        spec:
+          automountServiceAccountToken: false
+          containers:
+          - args: [ "-u {{ .Values.test_url }}", "--headers=X-Forwarded-For:{{ .Values.source_ip_address }}", "--forms", "--crawl=2" ]
+            image: vgartvichwallarm/sqlmap:latest
+            imagePullPolicy: Always
+            name: sqlmap
+          initContainers:
+          - command:
+            - /bin/sh
+            - -c
+            - sleep `shuf -i1-{{ .Values.delay }} -n1`m; date; echo Done sleeping
+            image: busybox
+            imagePullPolicy: Always
+            name: random-sleep
+            resources: {}
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+          restartPolicy: OnFailure
+          schedulerName: default-scheduler
+          shareProcessNamespace: false
+          terminationGracePeriodSeconds: 30
+  schedule: "{{ .Values.schedule }}"
+  startingDeadlineSeconds: 10
+  successfulJobsHistoryLimit: 10
+  suspend: false

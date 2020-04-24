@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-ip-addresses
+data:
+  ip_addresses.txt: |-
+{{ .Files.Get "random_ip_addresses.txt" | indent 4 }}

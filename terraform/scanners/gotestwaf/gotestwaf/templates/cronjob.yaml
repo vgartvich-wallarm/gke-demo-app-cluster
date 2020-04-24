@@ -1,0 +1,49 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  concurrencyPolicy: Replace
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      completions: 1
+      manualSelector: false
+      parallelism: 1
+      template:
+        spec:
+          automountServiceAccountToken: false
+          volumes:
+            - name: config-volume
+              configMap:
+                name: {{ .Release.Name }}-config
+          containers:
+          - args:
+            - --url={{ .Values.test_url }}
+            image: vgartvichwallarm/gotestwaf:latest
+            imagePullPolicy: Always
+            name: gotestwaf
+            volumeMounts:
+            - name: config-volume
+              mountPath: /go/src/gotestwaf/config.yaml
+              subPath: config.yaml
+          initContainers:
+          - command:
+            - /bin/sh
+            - -c
+            - sleep `shuf -i1-{{ .Values.delay }} -n1`m; date; echo Done sleeping
+            image: busybox
+            imagePullPolicy: Always
+            name: random-sleep
+            resources: {}
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+          restartPolicy: OnFailure
+          schedulerName: default-scheduler
+          shareProcessNamespace: false
+          terminationGracePeriodSeconds: 30
+  schedule: "{{ .Values.schedule }}"
+  startingDeadlineSeconds: 10
+  successfulJobsHistoryLimit: 10
+  suspend: false
