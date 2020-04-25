@@ -14,10 +14,27 @@ variable "region" {
   description = "The region to host the cluster in."
 }
 
+variable "zone" {
+  type        = string
+  description = "The zone to host the cluster in."
+}
+
 variable "machine_type" {
   type        = string
-  description = "Type of the node compute engines."
+  description = "Type of the Kubernetes node compute engines."
   default = "n1-standard-2"
+}
+
+variable "waf_node_machine_type" {
+  type        = string
+  description = "Type of the standalone autoscaling WAF cluster node compute engines."
+  default = "n1-standard-1"
+}
+
+variable "splunk_machine_type" {
+  type        = string
+  description = "Type of the standalone Splunk server."
+  default = "n1-standard-1"
 }
 
 variable "min_count" {
@@ -59,6 +76,11 @@ variable "suitecrm_password" {
   description = "The admin password to be configured for SuiteCRM app."
 }
 
+variable "grafana_password" {
+  type        = string
+  description = "The admin password to be configured for Grafana console."
+}
+
 variable "ingress_controller_token" {
   type        = string
   description = "The Wallarm cloud node token to be used for the ingress controller."
@@ -68,4 +90,9 @@ variable "api_host" {
   type        = string
   default     = "us1.api.wallarm.com"
   description = "The Wallarm API end-point to the used by the ingress controller and other WAF nodes."
+}
+
+variable "acme_email" {
+  type        = string
+  description = "The email address to be used for automatic ACME registration."
 }
