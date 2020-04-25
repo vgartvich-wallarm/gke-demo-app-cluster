@@ -48,6 +48,51 @@ resource "helm_release" "wallarm-ingress" {
     value = "true"
   }
 
+  set {
+    name = "controller.metrics.enabled"
+    value = "true"
+  }
+
+  set {
+    name = "controller.stats.enabled"
+    value = "true"
+  }
+
+  set_string {
+    name  = "controller.metrics.service.annotations.prometheus\\.io/scrape"
+    value = "true"
+  }
+
+  set_string {
+    name  = "controller.metrics.service.annotations.prometheus\\.io/port"
+    value = "10254"
+  }
+
+  set {
+    name = "controller.wallarm.metrics.enabled"
+    value = "true"
+  }
+
+  set {
+    name = "controller.metrics.serviceMonitor.enabled"
+    value = "true"
+  }
+
+  set_string {
+    name  = "controller.wallarm.metrics.service.annotations.prometheus\\.io/scrape"
+    value = "true"
+  }
+
+  set_string {
+    name  = "controller.wallarm.metrics.service.annotations.prometheus\\.io/path"
+    value = "/wallarm-metrics"
+  }
+
+  set_string {
+    name  = "controller.wallarm.metrics.service.annotations.prometheus\\.io/port"
+    value = "18080"
+  }
+
   set_string {
     name = "controller.config.http-snippet"
     value = file("whitelist.yaml")
