@@ -76,6 +76,16 @@ variable "suitecrm_password" {
   description = "The admin password to be configured for SuiteCRM app."
 }
 
+variable "prometheus_username" {
+  type        = string
+  description = "The username for Prometheus console UI."
+}
+
+variable "prometheus_encrypted_password" {
+  type        = string
+  description = "The encrypted password for Prometheus console UI."
+}
+
 variable "grafana_password" {
   type        = string
   description = "The admin password to be configured for Grafana console."

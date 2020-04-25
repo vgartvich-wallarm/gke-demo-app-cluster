@@ -1,3 +1,14 @@
+resource "kubernetes_secret" "basic-auth" {
+  metadata {
+    name = "tf-prometheus-basic-auth"
+  }
+
+  data = {
+    auth = "${var.prometheus_username}:${var.prometheus_encrypted_password}"
+  }
+
+  type = "Opaque"
+}
 
 resource "helm_release" "prometheus" {
   name  = "tf-prometheus"
@@ -21,6 +32,21 @@ resource "helm_release" "prometheus" {
   set_string {
     name  = "prometheus.ingress.hosts[0].name"
     value = "prometheus.${var.dns_zone}"
+  }
+
+  set_string {
+    name  = "prometheus.ingress.annotations.nginx\\.ingress\\.kubernetes\\.io/auth-type"
+    value = "basic"
+  }
+
+  set_string {
+    name  = "prometheus.ingress.annotations.nginx\\.ingress\\.kubernetes\\.io/auth-secret"
+    value = "tf-prometheus-basic-auth"
+  }
+
+  set_string {
+    name  = "prometheus.ingress.annotations.nginx\\.ingress\\.kubernetes\\.io/auth-realm"
+    value = "Authentication Required"
   }
 
   set {
@@ -66,6 +92,21 @@ resource "helm_release" "prometheus" {
   set_string {
     name  = "alertmanager.ingress.tls[0].secretName"
     value = "alertmanager-tls"
+  }
+
+  set_string {
+    name  = "alertmanager.ingress.annotations.nginx\\.ingress\\.kubernetes\\.io/auth-type"
+    value = "basic"
+  }
+
+  set_string {
+    name  = "alertmanager.ingress.annotations.nginx\\.ingress\\.kubernetes\\.io/auth-secret"
+    value = "tf-prometheus-basic-auth"
+  }
+
+  set_string {
+    name  = "alertmanager.ingress.annotations.nginx\\.ingress\\.kubernetes\\.io/auth-realm"
+    value = "Authentication Required"
   }
 
   set {
