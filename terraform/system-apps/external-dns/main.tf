@@ -21,4 +21,24 @@ resource "helm_release" "external-dns" {
     name  = "google.serviceAccountKey"
     value = filebase64(var.credentials)
   }
+
+  set {
+    name  = "metrics.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "metrics.serviceMonitor.enabled"
+    value = "true"
+  }
+
+  set_string {
+    name  = "metrics.podAnnotations.prometheus\\.io/scrape"
+    value = "true"
+  }
+
+  set_string {
+    name  = "metrics.podAnnotations.prometheus\\.io/port"
+    value = "7979"
+  }
 }
