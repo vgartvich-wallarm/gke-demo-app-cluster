@@ -84,11 +84,23 @@ update_scanners() {
 }
 
 update_system() {
-        cd terraform/system-apps/wallarm-ingress/
+        cd terraform/system-apps/prometheus/
+        terraform init
+        terraform apply
+
+        cd ../grafana
+        terraform init
+        terraform apply
+
+        cd ../wallarm-ingress/
         terraform init
         terraform apply
 
         cd ../external-dns/
+        terraform init
+        terraform apply
+
+        cd ../cert-manager/
         terraform init
         terraform apply
 
@@ -105,7 +117,6 @@ update_all() {
 	update_apps
 	
 	update_scanners
-
 }
 
 
