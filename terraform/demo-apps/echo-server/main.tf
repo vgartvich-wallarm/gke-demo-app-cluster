@@ -66,6 +66,7 @@ resource "kubernetes_ingress" "echo-server" {
        "nginx.ingress.kubernetes.io/wallarm-mode" = "$wallarm_mode_real"
        "nginx.ingress.kubernetes.io/wallarm-acl" = "on"
        "nginx.ingress.kubernetes.io/wallarm-instance" = "8"
+       "cert-manager.io/issuer" = "letsencrypt-prod"
     }
   }
 
@@ -73,6 +74,10 @@ resource "kubernetes_ingress" "echo-server" {
     backend {
       service_name = "tf-echo-server"
       service_port = 80
+    }
+    tls {
+      hosts = [ "echo-server.${var.dns_zone}" ]
+      secret_name = "echo-server-tls"
     }
 
     rule {
