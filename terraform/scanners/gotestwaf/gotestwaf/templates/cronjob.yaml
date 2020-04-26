@@ -17,28 +17,27 @@ spec:
           volumes:
             - name: config-volume
               configMap:
-                name: {{ .Release.Name }}-config
+                name: {{ .Release.Name }}-ip-addresses
           containers:
-          - args:
-            - --url={{ .Values.test_url }}
+          - command: [ "/bin/sh", "-c", "IP=`shuf /tmp/addresses.txt |head -1`; echo \"  X-Forwarded-For: $IP\" >> config.yaml; sleep 10000; ./gotestwaf --url={{ .Values.test_url }}" ]
             image: vgartvichwallarm/gotestwaf:latest
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             name: gotestwaf
             volumeMounts:
             - name: config-volume
-              mountPath: /go/src/gotestwaf/config.yaml
-              subPath: config.yaml
-          initContainers:
-          - command:
-            - /bin/sh
-            - -c
-            - sleep `shuf -i1-{{ .Values.delay }} -n1`m; date; echo Done sleeping
-            image: busybox
-            imagePullPolicy: Always
-            name: random-sleep
-            resources: {}
-            terminationMessagePath: /dev/termination-log
-            terminationMessagePolicy: File
+              mountPath: /tmp/addresses.txt
+              subPath: addresses.txt
+#          initContainers:
+#          - command:
+#            - /bin/sh
+#            - -c
+#            - sleep `shuf -i1-{{ .Values.delay }} -n1`m; date; echo Done sleeping
+#            image: busybox
+#            imagePullPolicy: IfNotPresent
+#            name: random-sleep
+#            resources: {}
+#            terminationMessagePath: /dev/termination-log
+#            terminationMessagePolicy: File
           restartPolicy: OnFailure
           schedulerName: default-scheduler
           shareProcessNamespace: false

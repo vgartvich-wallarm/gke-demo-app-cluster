@@ -10,17 +10,12 @@ resource "helm_release" "gotestwaf-dvwa" {
 
   set_string {
     name  = "schedule"
-    value = "5 * * * *"
+    value = "*/10 * * * *"
   }
 
   set_string {
     name  = "delay"
     value = "55"
-  }
-
-  set_string {
-    name  = "source_ip_address"
-    value = "221.129.247.24"
   }
 }
 
@@ -35,17 +30,12 @@ resource "helm_release" "gotestwaf-wordpress" {
 
   set_string {
     name  = "schedule"
-    value = "15 * * * *"
+    value = "*/3 * * * *"
   }
 
   set_string {
     name  = "delay"
     value = "55"
-  }
-
-  set_string {
-    name  = "source_ip_address"
-    value = "36.19.47.4"
   }
 }
 
@@ -60,16 +50,11 @@ resource "helm_release" "gotestwaf-suitecrm" {
 
   set_string {
     name  = "schedule"
-    value = "40 * * * *"
+    value = "*/20 * * * *"
   }
 
   set_string {
     name  = "delay"
     value = "55"
-  }
-
-  set_string {
-    name  = "source_ip_address"
-    value = "197.63.35.74"
   }
 }

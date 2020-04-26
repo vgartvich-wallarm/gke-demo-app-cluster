@@ -13,23 +13,31 @@ spec:
       parallelism: 1
       template:
         spec:
+          volumes:
+            - name: config-volume
+              configMap:
+                name: {{ .Release.Name }}-ip-addresses
           automountServiceAccountToken: false
           containers:
-          - command: [ "/bin/sh", "-c", "nl=$'\n'; cr=$'\r'; nikto.pl -h {{ .Values.test_url }} -useragent \"nikto${cr}${nl}X-Forwarded-For: {{ .Values.source_ip_address }}\"" ]
+          - command: [ "/bin/sh", "-c", "IP=`shuf /tmp/addresses.txt |head -1`; nl=$'\n'; cr=$'\r'; nikto.pl -h {{ .Values.test_url }} -useragent \"nikto${cr}${nl}X-Forwarded-For: $IP\"" ]
             image: vgartvichwallarm/nikto:latest
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             name: nikto
-          initContainers:
-          - command:
-            - /bin/sh
-            - -c
-            - sleep `shuf -i1-{{ .Values.delay }} -n1`m; date; echo Done sleeping
-            image: busybox
-            imagePullPolicy: Always
-            name: random-sleep
-            resources: {}
-            terminationMessagePath: /dev/termination-log
-            terminationMessagePolicy: File
+            volumeMounts:
+            - name: config-volume
+              mountPath: /tmp/addresses.txt
+              subPath: addresses.txt
+#          initContainers:
+#          - command:
+#            - /bin/sh
+#            - -c
+#            - sleep `shuf -i1-{{ .Values.delay }} -n1`m; date; echo Done sleeping
+#            image: busybox
+#            imagePullPolicy: IfNotPresent
+#            name: random-sleep
+#            resources: {}
+#            terminationMessagePath: /dev/termination-log
+#            terminationMessagePolicy: File
           restartPolicy: OnFailure
           schedulerName: default-scheduler
           shareProcessNamespace: false

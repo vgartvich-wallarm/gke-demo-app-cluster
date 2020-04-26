@@ -80,6 +80,14 @@ update_scanners() {
 	terraform init
 	terraform apply
 
+	cd ../sqlmap
+	terraform init
+	terraform apply
+
+	cd ../scripts
+	terraform init
+	terraform apply
+
 	cd ../../..
 }
 

@@ -38,8 +38,8 @@ resource "helm_release" "grafana" {
     value = "grafana-tls"
   }
 
-  set {
-    name  = "ingress.annotations.kubernetes\\.io/force-ssl-redirect"
+  set_string {
+    name  = "ingress.annotations.nginx\\.ingress\\.kubernetes\\.io/force-ssl-redirect"
     value = "true"
   }
 

@@ -52,7 +52,7 @@ variable "max_count" {
 variable "disk_size_gb" {
   type        = number
   description = "Size of the node's disk."
-  default = "10"
+  default = "30"
 }
 
 variable "initial_node_count" {

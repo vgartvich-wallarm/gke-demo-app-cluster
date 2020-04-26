@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-ip-addresses
+data:
+  addresses.txt: |-
+{{ .Files.Get "random_ip_addresses.txt" | indent 4 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-scripts
+data:
+  send-dvwa-attacks.sh: |-
+{{ .Files.Get "send-dvwa-attacks.sh" | indent 4 }}
+  send-tiredfulapi-attacks.sh: |-
+{{ .Files.Get "send-tiredfulapi-attacks.sh" | indent 4 }}

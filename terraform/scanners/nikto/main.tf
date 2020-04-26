@@ -10,17 +10,32 @@ resource "helm_release" "nikto-wordpress" {
 
   set_string {
     name  = "schedule"
-    value = "6 4 * * *"
+    value = "2 * * * *"
   }
 
   set_string {
     name  = "delay"
     value = "120"
   }
+}
+
+resource "helm_release" "nikto-grafana" {
+  name  = "tf-nikto-grafana"
+  chart = "nikto"
 
   set_string {
-    name  = "source_ip_address"
-    value = "21.19.27.4"
+    name  = "test_url"
+    value = "https://grafana.${var.dns_zone}"
+  }
+
+  set_string {
+    name  = "schedule"
+    value = "4 * * * *"
+  }
+
+  set_string {
+    name  = "delay"
+    value = "120"
   }
 }
 
