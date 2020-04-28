@@ -1,9 +1,9 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ .Release.Name }}-zipbomb
 spec:
-  concurrencyPolicy: Replace
+  concurrencyPolicy: Allow
   failedJobsHistoryLimit: 5
   jobTemplate:
     spec:
@@ -13,36 +13,25 @@ spec:
       parallelism: 1
       template:
         spec:
-          automountServiceAccountToken: false
           volumes:
             - name: config-volume
               configMap:
                 name: {{ .Release.Name }}-ip-addresses
+          automountServiceAccountToken: false
           containers:
-          - command: [ "/bin/sh", "-c", "IP=`shuf /tmp/addresses.txt |head -1`; echo \"  X-Forwarded-For: $IP\" >> config.yaml; ./gotestwaf --url={{ .Values.test_url }}" ]
-            image: vgartvichwallarm/gotestwaf:latest
+          - command: [ "/bin/sh", "-c", "IP=`shuf /tmp/addresses.txt |head -1`; curl -v --data-binary @zblg.zip https://echo-server.{{ .Values.domain_name }}/ -H X-Forwarded-For:$IP" ]
+            image: vgartvichwallarm/ubuntu18:latest
             imagePullPolicy: IfNotPresent
-            name: gotestwaf
+            name: zipbomb
             volumeMounts:
             - name: config-volume
               mountPath: /tmp/addresses.txt
               subPath: addresses.txt
-#          initContainers:
-#          - command:
-#            - /bin/sh
-#            - -c
-#            - sleep `shuf -i1-{{ .Values.delay }} -n1`m; date; echo Done sleeping
-#            image: busybox
-#            imagePullPolicy: IfNotPresent
-#            name: random-sleep
-#            resources: {}
-#            terminationMessagePath: /dev/termination-log
-#            terminationMessagePolicy: File
           restartPolicy: OnFailure
           schedulerName: default-scheduler
           shareProcessNamespace: false
           terminationGracePeriodSeconds: 30
-  schedule: "{{ .Values.schedule }}"
+  schedule: "{{ .Values.schedule_zipbomb }}"
   startingDeadlineSeconds: 10
   successfulJobsHistoryLimit: 10
   suspend: false

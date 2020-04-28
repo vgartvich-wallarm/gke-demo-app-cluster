@@ -53,6 +53,15 @@ if [ -z "$SERVER_NAME" ]; then
 	SERVER_NAME=$DOMAIN_NAME
 fi
 
+scanner() {
+	log_message INFO "Sending Scanner attacks..."
+	for UA in burpcollaborator.net acunetix_wvs_security_test bxss.me .nasl; do
+		log_message INFO "Sending Scanner attack with UA header \"$UA\"..."
+        	curl $SOURCE_IP -x$SERVER_NAME:80 "http://$DOMAIN_NAME/login.php" -H "User-Agent: $UA" -v > /tmp/tmp.txt 2>&1
+	done
+
+}
+
 login () {
 
 	log_message INFO "Retrieving the session ID..."
@@ -102,6 +111,8 @@ stored_xss () {
 	log_message INFO "Trying Stored XSS  exploit..."
 	curl $SOURCE_IP -H "Cookie: $PHPSESSION security=low" -x$SERVER_NAME:80 "http://$DOMAIN_NAME/vulnerabilities/xss_s/" -X POST -d"txtName=werewrwer&mtxMessage=%3Cscript%3Ealert%28%22This+is+a+XSS+est%22%29%3C%2Fscript%3E&btnSign=Sign+Guestbook" -H "Content-Type: application/x-www-form-urlencoded" 2>&1
 }
+
+scanner
 
 login
 

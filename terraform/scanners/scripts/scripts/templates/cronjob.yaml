@@ -44,17 +44,17 @@ spec:
             - name: config-scripts
               mountPath: /tmp/send-dvwa-attacks.sh
               subPath: send-dvwa-attacks.sh
-#          initContainers:
-#          - command:
-#            - /bin/sh
-#            - -c
-#            - sleep `shuf -i1-{{ .Values.delay }} -n1`m; date; echo Done sleeping
-#            image: busybox
-#            imagePullPolicy: IfNotPresent
-#            name: random-sleep
-#            resources: {}
-#            terminationMessagePath: /dev/termination-log
-#            terminationMessagePolicy: File
+          - command: [ "/bin/sh", "-c", "IP=`shuf /tmp/addresses.txt |head -1`; sh /tmp/send-nginx-attacks.sh nginx.{{ .Values.domain_name }} $IP" ]
+            image: vgartvichwallarm/ubuntu18
+            imagePullPolicy: IfNotPresent
+            name: scripts-nginx
+            volumeMounts:
+            - name: config-volume
+              mountPath: /tmp/addresses.txt
+              subPath: addresses.txt
+            - name: config-scripts
+              mountPath: /tmp/send-nginx-attacks.sh
+              subPath: send-nginx-attacks.sh
           restartPolicy: OnFailure
           schedulerName: default-scheduler
           shareProcessNamespace: false

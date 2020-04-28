@@ -38,4 +38,14 @@ resource "helm_release" "wordpress" {
     name  = "ingress.annotations.nginx\\.ingress\\.kubernetes\\.io/wallarm-instance"
     value = "6"
   }
+
+  set_string {
+    name  = "wordpressUsername"
+    value = var.wordpress_username
+  }
+
+  set_sensitive {
+    name  = "wordpressPassword"
+    value = var.wordpress_password
+  }
 }

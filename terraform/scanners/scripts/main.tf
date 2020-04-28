@@ -10,7 +10,12 @@ resource "helm_release" "scripts" {
 
   set_string {
     name  = "schedule"
-    value = "*/4 * * * *"
+    value = "*/45 * * * *"
+  }
+
+  set_string {
+    name  = "schedule_zipbomb"
+    value = "5 */2 * * *"
   }
 
   set_string {

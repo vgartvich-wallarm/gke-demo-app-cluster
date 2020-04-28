@@ -55,7 +55,7 @@ resource "helm_release" "grafana" {
 
   set_string {
     name  = "ingress.annotations.nginx\\.ingress\\.kubernetes\\.io/wallarm-instance"
-    value = "1"
+    value = "4"
   }
 
   set_string {

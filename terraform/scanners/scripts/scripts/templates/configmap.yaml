@@ -15,3 +15,5 @@ data:
 {{ .Files.Get "send-dvwa-attacks.sh" | indent 4 }}
   send-tiredfulapi-attacks.sh: |-
 {{ .Files.Get "send-tiredfulapi-attacks.sh" | indent 4 }}
+  send-nginx-attacks.sh: |-
+{{ .Files.Get "send-nginx-attacks.sh" | indent 4 }}

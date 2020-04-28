@@ -106,3 +106,13 @@ variable "acme_email" {
   type        = string
   description = "The email address to be used for automatic ACME registration."
 }
+
+variable "wordpress_username" {
+  type        = string
+  description = "Wordpress admin username"
+}
+
+variable "wordpress_password" {
+  type        = string
+  description = "Wordpress admin username"
+}

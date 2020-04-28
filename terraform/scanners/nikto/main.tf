@@ -10,7 +10,7 @@ resource "helm_release" "nikto-wordpress" {
 
   set_string {
     name  = "schedule"
-    value = "2 * * * *"
+    value = "2 */5 * * *"
   }
 
   set_string {
@@ -30,7 +30,7 @@ resource "helm_release" "nikto-grafana" {
 
   set_string {
     name  = "schedule"
-    value = "4 * * * *"
+    value = "30 */7 * * *"
   }
 
   set_string {

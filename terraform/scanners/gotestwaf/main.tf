@@ -10,7 +10,7 @@ resource "helm_release" "gotestwaf-dvwa" {
 
   set_string {
     name  = "schedule"
-    value = "*/10 * * * *"
+    value = "*/30 * * * *"
   }
 
   set_string {
@@ -30,7 +30,7 @@ resource "helm_release" "gotestwaf-wordpress" {
 
   set_string {
     name  = "schedule"
-    value = "*/3 * * * *"
+    value = "*/45 * * * *"
   }
 
   set_string {
@@ -50,7 +50,7 @@ resource "helm_release" "gotestwaf-suitecrm" {
 
   set_string {
     name  = "schedule"
-    value = "*/20 * * * *"
+    value = "*/45 * * * *"
   }
 
   set_string {
