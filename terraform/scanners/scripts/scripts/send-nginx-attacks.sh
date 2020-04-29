@@ -23,4 +23,6 @@ curl -v $IP "http://$DOMAIN/index.php"
 curl -v $IP "http://$DOMAIN/Dockerfile"
 curl -v $IP "http://$DOMAIN/.gitignore"
 curl -v $IP "http://$DOMAIN/metrics"
+curl -v $IP "http://$DOMAIN/id_rsa"
+curl -v $IP "http://$DOMAIN/id_rsa.pub"
 

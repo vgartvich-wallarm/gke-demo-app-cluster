@@ -10,7 +10,7 @@ resource "helm_release" "sqlmap-dvwa" {
 
   set_string {
     name  = "schedule"
-    value = "4 */4 * * *"
+    value = "5 */4 * * *"
   }
 
   set_string {

@@ -1,5 +1,10 @@
 #!/bin/bash
+#
+# Use the script to update all or specific components of the environment.
+#
 
+# Fail the script in case of an error
+set -e
 
 log_message () {
         SEVERITY=$1
@@ -29,14 +34,18 @@ usage() {
 }
 
 update_gke() {
+	log_message INFO "Updating the GKE cluster configuration..."
 	cd terraform/gke
 	make init
 	make apply
+
+	log_message INFO "Pulling the kubectl configuration..."
 	make pull-kubectl-config
 	cd ../..
 }
 
 update_dns() {
+	log_message INFO "Updating the DNS zone configuration..."
         cd terraform/dns
         terraform init
         terraform apply
@@ -44,27 +53,38 @@ update_dns() {
 }
 
 update_apps() {
+	log_message INFO "Updating the DVWA app configuration..."
 	cd terraform/demo-apps/dvwa
 	terraform init
 	terraform apply
-	
+
+	log_message INFO "Updating the Wordpress app configuration..."
 	cd ../wordpress
 	terraform init
 	terraform apply
 
+	log_message INFO "Updating the SuiteCRM app configuration..."
 	cd ../suitecrm
 	terraform init
 	terraform apply
 
+	log_message INFO "Updating the Echo Server configuration..."
 	cd ../echo-server
 	terraform init
 	terraform apply
 
+	log_message INFO "Updating the Tiredful-API configuration..."
 	cd ../tiredful-api
 	terraform init
 	terraform apply
 
+	log_message INFO "Updating the Mutillidae II app configuration..."
 	cd ../mutillidae
+	terraform init
+	terraform apply
+
+	log_message INFO "Updating the simple Nginx server configuration..."
+	cd ../nginx
 	terraform init
 	terraform apply
 
@@ -72,18 +92,22 @@ update_apps() {
 }
 
 update_scanners() {
+	log_message INFO "Update the GoTestWAF cronjob configuration..."
 	cd terraform/scanners/gotestwaf
 	terraform init
 	terraform apply
 
+	log_message INFO "Update the Nikto cronjob configuration..."
 	cd ../nikto
 	terraform init
 	terraform apply
 
+	log_message INFO "Update the Sqlmap cronjob configuration..."
 	cd ../sqlmap
 	terraform init
 	terraform apply
 
+	log_message INFO "Update the configuration of custom scripts cronjobs..."
 	cd ../scripts
 	terraform init
 	terraform apply
@@ -92,22 +116,27 @@ update_scanners() {
 }
 
 update_system() {
+	log_message INFO "Update the Prometheus configuration..."
         cd terraform/system-apps/prometheus/
         terraform init
         terraform apply
 
+	log_message INFO "Update the Grafana configuration..."
         cd ../grafana
         terraform init
         terraform apply
 
+	log_message INFO "Update the Grafana configuration..."
         cd ../wallarm-ingress/
         terraform init
         terraform apply
 
+	log_message INFO "Update the External-DNS configuration..."
         cd ../external-dns/
         terraform init
         terraform apply
 
+	log_message INFO "Update the Cert-Manager configuration..."
         cd ../cert-manager/
         terraform init
         terraform apply
