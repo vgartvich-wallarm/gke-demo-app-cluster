@@ -22,43 +22,43 @@ variable "zone" {
 variable "machine_type" {
   type        = string
   description = "Type of the Kubernetes node compute engines."
-  default = "n1-standard-2"
+  default     = "n1-standard-2"
 }
 
 variable "waf_node_machine_type" {
   type        = string
   description = "Type of the standalone autoscaling WAF cluster node compute engines."
-  default = "n1-standard-1"
+  default     = "n1-standard-1"
 }
 
 variable "splunk_machine_type" {
   type        = string
   description = "Type of the standalone Splunk server."
-  default = "n1-standard-1"
+  default     = "n1-standard-1"
 }
 
 variable "min_count" {
   type        = number
   description = "Minimum number of nodes in the NodePool. Must be >=0 and <= max_node_count."
-  default = "1"
+  default     = "1"
 }
 
 variable "max_count" {
   type        = number
   description = "Maximum number of nodes in the NodePool. Must be >= min_node_count."
-  default = "5"
+  default     = "5"
 }
 
 variable "disk_size_gb" {
   type        = number
   description = "Size of the node's disk."
-  default = "30"
+  default     = "30"
 }
 
 variable "initial_node_count" {
   type        = number
   description = "The number of nodes to create in this cluster's default node pool."
-  default = "1"
+  default     = "1"
 }
 
 variable "dns_zone" {
@@ -115,4 +115,26 @@ variable "wordpress_username" {
 variable "wordpress_password" {
   type        = string
   description = "Wordpress admin username"
+}
+
+variable "waf_node_deploy_username" {
+  type        = string
+  description = "The user with the Deploy permissions"
+}
+
+variable "waf_node_deploy_password" {
+  type        = string
+  description = "The password for the user with Deploy permissions"
+}
+
+variable "waf_node_acl_enabled" {
+  type        = bool
+  description = "The variable defines IP ACL usage in a Wallarm container"
+  default     = false
+}
+
+variable "waf_node_tarantool_memory" {
+  type        = number
+  description = "Amount of memory in GB for request analytics data, recommended value is 75% of the total server memory"
+  default     = 2
 }
