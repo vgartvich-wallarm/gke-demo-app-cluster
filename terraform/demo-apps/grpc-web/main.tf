@@ -104,8 +104,12 @@ resource "kubernetes_deployment" "web-grpc" {
 resource "kubernetes_service" "tf-web-grpc" {
   metadata {
     name = "tf-web-grpc"
+    annotations = {
+       "external-dns.alpha.kubernetes.io/hostname" = "grpc.${var.dns_zone}"
+    }
   }
   spec {
+    type = "LoadBalancer"
     selector = {
       app = "tf-web-grpc"
     }
@@ -143,51 +147,3 @@ resource "kubernetes_secret" "tf-wallarm-envoy-secret" {
   type = "Opaque"
 }
 
-
-resource "kubernetes_ingress" "tf-web-ingress" {
-  metadata {
-    name = "tf-web-grpc-ingress"
-    annotations = {
-      # "kubernetes.io/ingress.class"                  = "wallarm-ingress"
-    }
-  }
-
-  spec {
-    rule {
-      host = "grpc.${var.dns_zone}"
-      http {
-        path {
-          backend {
-            service_name = "tf-web-grpc"
-            service_port = 80
-          }
-          path = "/"
-        }
-      }
-    }
-  }
-}
-
-resource "kubernetes_ingress" "tf-grpc-ingress" {
-  metadata {
-    name = "tf-web-grpc-ingress"
-    annotations = {
-      # "kubernetes.io/ingress.class"                  = "wallarm-ingress"
-    }
-  }
-
-  spec {
-    rule {
-      host = "grpc.${var.dns_zone}"
-      http {
-        path {
-          backend {
-            service_name = "tf-web-grpc"
-            service_port = 8080
-          }
-          path = "/"
-        }
-      }
-    }
-  }
-}

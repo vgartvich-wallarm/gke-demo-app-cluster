@@ -136,5 +136,5 @@ variable "waf_node_acl_enabled" {
 variable "waf_node_tarantool_memory" {
   type        = number
   description = "Amount of memory in GB for request analytics data, recommended value is 75% of the total server memory"
-  default     = 2
+  default     = 0.2
 }
