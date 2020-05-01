@@ -31,7 +31,7 @@ static_resources:
               typed_per_filter_config:
                 wallarm:
                   "@type": type.googleapis.com/wallarm.WallarmConf
-                  instance: 42 # mark everything within this VHost as instance 42
+                  instance: 2 # mark everything within this VHost as instance 2
                   acl: acl0 # use acl0 within this VHost
               domains:
               - "*"

@@ -25,19 +25,11 @@ resource "kubernetes_deployment" "web-grpc" {
       spec {
         container {
           name  = "web-grpc-node"
-          image = "awallarm/node-server"
+          image = "vgartvichwallarm/grpc-server"
           port {
             name           = "grpc"
             container_port = 9090
             protocol       = "TCP"
-          }
-          resources {
-            limits {
-              memory = "512Mi"
-            }
-            requests {
-              cpu = "100m"
-            }
           }
         }
 
@@ -48,14 +40,6 @@ resource "kubernetes_deployment" "web-grpc" {
             name           = "http"
             container_port = 8080
             protocol       = "TCP"
-          }
-          resources {
-            limits {
-              memory = "512Mi"
-            }
-            requests {
-              cpu = "100m"
-            }
           }
 
           volume_mount {
@@ -81,6 +65,7 @@ resource "kubernetes_deployment" "web-grpc" {
 
           env {
             name = "DEPLOY_PASSWORD"
+
             value_from {
               secret_key_ref {
                 key  = "DEPLOY_PASSWORD"
@@ -92,19 +77,11 @@ resource "kubernetes_deployment" "web-grpc" {
         }
         container {
           name  = "web-grpc-client"
-          image = "awallarm/commonjs-client"
+          image = "vgartvichwallarm/grpc-web"
           port {
             name           = "http"
             container_port = 8081
             protocol       = "TCP"
-          }
-          resources {
-            limits {
-              memory = "512Mi"
-            }
-            requests {
-              cpu = "100m"
-            }
           }
         }
 
@@ -142,12 +119,6 @@ resource "kubernetes_service" "tf-web-grpc" {
       port        = 8080
       target_port = 8080
     }
-    port {
-      name        = "grpc"
-      port        = 9090
-      target_port = 9090
-    }
-
   }
 }
 
@@ -156,7 +127,7 @@ resource "kubernetes_config_map" "tf-wallarm-envoy-conf" {
     name = "tf-wallarm-envoy-conf"
   }
   data = {
-    "envoy.yaml" = "${file("${path.module}/build/envoy/envoy.yaml")}"
+    "envoy.yaml" = "${file("${path.module}/envoy.yaml")}"
   }
 }
 
@@ -166,8 +137,8 @@ resource "kubernetes_secret" "tf-wallarm-envoy-secret" {
   }
 
   data = {
-    DEPLOY_USER     = var.deploy_user
-    DEPLOY_PASSWORD = var.deploy_password
+    DEPLOY_USER     = var.waf_node_deploy_username
+    DEPLOY_PASSWORD = var.waf_node_deploy_password
   }
   type = "Opaque"
 }

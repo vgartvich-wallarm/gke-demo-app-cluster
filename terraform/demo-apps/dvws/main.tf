@@ -1,9 +1,14 @@
 resource "kubernetes_deployment" "tf-dvws" {
   metadata {
     name = "tf-dvws"
+    labels = {
+      app = "tf-dvws"
+    }
   }
 
   spec {
+    replicas = 1
+
     selector {
       match_labels = {
         app = "tf-dvws"
@@ -32,9 +37,8 @@ resource "kubernetes_deployment" "tf-dvws" {
         }
 
         container {
-          name    = "wallarm-nginx"
-          image   = "awallarm/wallarm-node-sidecar:slim"
-          command = ["/usr/local/bin/nginx.sh"]
+          name  = "wallarm-nginx"
+          image = "wallarm/node:2.14"
 
           port {
             name           = "http"
@@ -48,16 +52,37 @@ resource "kubernetes_deployment" "tf-dvws" {
 
           env {
             name  = "WALLARM_API_HOST"
-            value = "api.wallarm.com"
+            value = var.api_host
           }
 
           env {
-            name = "WALLARM_API_TOKEN"
+            name  = "WALLARM_ACL_ENABLE"
+            value = var.waf_node_acl_enabled
+          }
+
+          env {
+            name  = "TARANTOOL_MEMORY_GB"
+            value = var.waf_node_tarantool_memory
+          }
+
+          env {
+            name = "DEPLOY_USER"
 
             value_from {
               secret_key_ref {
+                key  = "DEPLOY_USER"
                 name = "tf-wallarm-node-secret"
-                key  = "WALLARM_API_TOKEN"
+              }
+            }
+          }
+
+          env {
+            name = "DEPLOY_PASSWORD"
+
+            value_from {
+              secret_key_ref {
+                key  = "DEPLOY_PASSWORD"
+                name = "tf-wallarm-node-secret"
               }
             }
           }
@@ -92,58 +117,6 @@ resource "kubernetes_deployment" "tf-dvws" {
         }
 
         container {
-          name    = "wallarm-tarantool"
-          image   = "awallarm/wallarm-node-sidecar:slim"
-          command = ["/usr/local/bin/tarantool.sh"]
-
-          port {
-            name           = "tcp"
-            container_port = 3313
-          }
-
-          env {
-            name  = "WALLARM_API_HOST"
-            value = "api.wallarm.com"
-          }
-
-          env {
-            name = "WALLARM_API_TOKEN"
-
-            value_from {
-              secret_key_ref {
-                name = "tf-wallarm-node-secret"
-                key  = "WALLARM_API_TOKEN"
-              }
-            }
-          }
-
-          resources {
-            limits {
-              cpu    = "500m"
-              memory = "256Mi"
-            }
-          }
-
-          liveness_probe {
-            tcp_socket {
-              port = "3313"
-            }
-
-            initial_delay_seconds = 10
-            period_seconds        = 20
-          }
-
-          readiness_probe {
-            tcp_socket {
-              port = "3313"
-            }
-
-            initial_delay_seconds = 5
-            period_seconds        = 10
-          }
-        }
-
-        container {
           name  = "dvws"
           image = "tssoffsec/dvws"
 
@@ -155,13 +128,6 @@ resource "kubernetes_deployment" "tf-dvws" {
           port {
             name           = "ws"
             container_port = 8080
-          }
-
-          resources {
-            limits {
-              cpu    = "500m"
-              memory = "128Mi"
-            }
           }
 
           image_pull_policy = "IfNotPresent"
@@ -195,7 +161,7 @@ resource "kubernetes_service" "tf-dvws" {
   }
 }
 
-resource "kubernetes_config_map" "tf-wallarm_sidecar_nginx_conf" {
+resource "kubernetes_config_map" "tf-wallarm-sidecar-nginx-conf" {
   metadata {
     name = "tf-wallarm-sidecar-nginx-conf"
   }
@@ -211,7 +177,8 @@ resource "kubernetes_secret" "tf-wallarm-node-secret" {
   }
 
   data = {
-    WALLARM_API_TOKEN = var.ingress_controller_token
+    DEPLOY_USER     = var.waf_node_deploy_username
+    DEPLOY_PASSWORD = var.waf_node_deploy_password
   }
   type = "Opaque"
 }
