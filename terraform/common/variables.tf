@@ -117,12 +117,24 @@ variable "wordpress_password" {
   description = "Wordpress admin username"
 }
 
-variable "deploy_user" {
+variable "waf_node_deploy_username" {
   type        = string
   description = "The user with the Deploy permissions"
 }
 
-variable "deploy_password" {
+variable "waf_node_deploy_password" {
   type        = string
   description = "The password for the user with Deploy permissions"
+}
+
+variable "waf_node_acl_enabled" {
+  type        = bool
+  description = "The variable defines IP ACL usage in a Wallarm container"
+  default     = false
+}
+
+variable "waf_node_tarantool_memory" {
+  type        = number
+  description = "Amount of memory in GB for request analytics data, recommended value is 75% of the total server memory"
+  default     = 2
 }
