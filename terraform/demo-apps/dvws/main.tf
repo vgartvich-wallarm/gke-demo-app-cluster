@@ -36,9 +36,11 @@ resource "kubernetes_deployment" "tf-dvws" {
           }
         }
 
+	# This container runs a Wallarm WAF node as a sidecar
         container {
-          name  = "wallarm-nginx"
+          name  = "wallarm"
           image = "wallarm/node:2.14"
+          command = [ "/bin/sh", "-c", "rm -f /etc/nginx/conf.d/wallarm* ; /usr/local/bin/init" ]  
 
           port {
             name           = "http"
@@ -51,14 +53,19 @@ resource "kubernetes_deployment" "tf-dvws" {
           }
 
           env {
+            name  = "DEPLOY_FORCE"
+            value = "true"
+          }
+
+          env {
             name  = "WALLARM_API_HOST"
             value = var.api_host
           }
 
-          env {
-            name  = "WALLARM_ACL_ENABLE"
-            value = var.waf_node_acl_enabled
-          }
+#          env {
+#            name  = "WALLARM_ACL_ENABLE"
+#            value = var.waf_node_acl_enabled
+#          }
 
           env {
             name  = "TARANTOOL_MEMORY_GB"
@@ -140,9 +147,15 @@ resource "kubernetes_deployment" "tf-dvws" {
 resource "kubernetes_service" "tf-dvws" {
   metadata {
     name = "tf-dvws"
+    annotations = {
+       "external-dns.alpha.kubernetes.io/hostname" = "dvws.${var.dns_zone}"
+    }
   }
 
   spec {
+    type = "LoadBalancer"
+    external_traffic_policy = "Local"
+
     port {
       name        = "web-http"
       port        = 80
@@ -181,53 +194,4 @@ resource "kubernetes_secret" "tf-wallarm-node-secret" {
     DEPLOY_PASSWORD = var.waf_node_deploy_password
   }
   type = "Opaque"
-}
-
-
-resource "kubernetes_ingress" "tf-dvws-web-ingress" {
-  metadata {
-    name = "tf-dvws-ingress"
-    annotations = {
-      # "kubernetes.io/ingress.class"                  = "wallarm-ingress"
-    }
-  }
-
-  spec {
-    rule {
-      host = "dvws.${var.dns_zone}"
-      http {
-        path {
-          backend {
-            service_name = "tf-dvws"
-            service_port = 80
-          }
-          path = "/"
-        }
-      }
-    }
-  }
-}
-
-resource "kubernetes_ingress" "tf-dvws-ws-ingress" {
-  metadata {
-    name = "tf-dvws-ingress"
-    annotations = {
-      # "kubernetes.io/ingress.class"                  = "wallarm-ingress"
-    }
-  }
-
-  spec {
-    rule {
-      host = "dvws.${var.dns_zone}"
-      http {
-        path {
-          backend {
-            service_name = "tf-dvws"
-            service_port = 8080
-          }
-          path = "/"
-        }
-      }
-    }
-  }
 }

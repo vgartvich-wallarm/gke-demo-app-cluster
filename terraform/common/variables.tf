@@ -128,9 +128,9 @@ variable "waf_node_deploy_password" {
 }
 
 variable "waf_node_acl_enabled" {
-  type        = bool
+  type        = string
   description = "The variable defines IP ACL usage in a Wallarm container"
-  default     = false
+  default     = "False"
 }
 
 variable "waf_node_tarantool_memory" {
