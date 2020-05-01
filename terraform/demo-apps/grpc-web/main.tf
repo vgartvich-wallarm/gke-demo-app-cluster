@@ -110,6 +110,8 @@ resource "kubernetes_service" "tf-web-grpc" {
   }
   spec {
     type = "LoadBalancer"
+    external_traffic_policy = "Local"
+
     selector = {
       app = "tf-web-grpc"
     }
