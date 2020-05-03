@@ -1,0 +1,48 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  concurrencyPolicy: Replace
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      completions: 1
+      manualSelector: false
+      parallelism: 1
+      template:
+        spec:
+          automountServiceAccountToken: false
+          containers:
+          - image: "{{ .Values.image }}"
+            imagePullPolicy: Always
+            name: log-exporter
+            env:
+            - name: POOLID
+              value: "{{ .Values.pool_id }}"
+            - name: WALLARM_API
+              value: "{{ .Values.wallarm_api }}"
+            - name: WALLARM_UUID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}.secret
+                  key: wallarm_uuid
+            - name: WALLARM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}.secret
+                  key: wallarm_secret
+            - name: COLLECTOR_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}.secret
+                  key: collector_address
+          restartPolicy: OnFailure
+          schedulerName: default-scheduler
+          shareProcessNamespace: false
+          terminationGracePeriodSeconds: 10
+  schedule: "{{ .Values.schedule }}"
+  startingDeadlineSeconds: 10
+  successfulJobsHistoryLimit: 10
+  suspend: false
