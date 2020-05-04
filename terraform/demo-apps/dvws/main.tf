@@ -36,11 +36,10 @@ resource "kubernetes_deployment" "tf-dvws" {
           }
         }
 
-	# This container runs a Wallarm WAF node as a sidecar
+        # This container runs a Wallarm WAF node as a sidecar
         container {
           name  = "wallarm"
           image = "wallarm/node:2.14"
-          command = [ "/bin/sh", "-c", "rm -f /etc/nginx/conf.d/wallarm* ; /usr/local/bin/init" ]  
 
           port {
             name           = "http"
@@ -62,10 +61,10 @@ resource "kubernetes_deployment" "tf-dvws" {
             value = var.api_host
           }
 
-#          env {
-#            name  = "WALLARM_ACL_ENABLE"
-#            value = var.waf_node_acl_enabled
-#          }
+          #          env {
+          #            name  = "WALLARM_ACL_ENABLE"
+          #            value = var.waf_node_acl_enabled
+          #          }
 
           env {
             name  = "TARANTOOL_MEMORY_GB"
@@ -125,7 +124,7 @@ resource "kubernetes_deployment" "tf-dvws" {
 
         container {
           name  = "dvws"
-          image = "tssoffsec/dvws"
+          image = "vgartvichwallarm/dvws"
 
           port {
             name           = "http"
@@ -137,7 +136,7 @@ resource "kubernetes_deployment" "tf-dvws" {
             container_port = 8080
           }
 
-          image_pull_policy = "IfNotPresent"
+          image_pull_policy = "Always"
         }
       }
     }
@@ -148,12 +147,12 @@ resource "kubernetes_service" "tf-dvws" {
   metadata {
     name = "tf-dvws"
     annotations = {
-       "external-dns.alpha.kubernetes.io/hostname" = "dvws.${var.dns_zone}"
+      "external-dns.alpha.kubernetes.io/hostname" = "dvws.${var.dns_zone}"
     }
   }
 
   spec {
-    type = "LoadBalancer"
+    type                    = "LoadBalancer"
     external_traffic_policy = "Local"
 
     port {
