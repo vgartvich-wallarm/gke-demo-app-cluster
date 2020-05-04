@@ -14,7 +14,7 @@ log_message () {
 
 
 usage() {
-        echo "Usage: 
+        echo "Usage:
 
         Supported parameters (only one should be specified):
                 -h
@@ -29,8 +29,10 @@ usage() {
                         Update the DNS section.
                 update_apps
                         Update all demo applications.
-                update_scanner
-                        Update all scanner components."
+                update_scanners
+                        Update all scanner components.
+                update_integrations
+                        Update all integration components."
 }
 
 update_gke() {
@@ -149,16 +151,27 @@ update_system() {
         cd ../../..
 }
 
+update_integrations() {
+	log_message INFO "Update the Loggly cronjob configuration..."
+	cd terraform/integration-demos/loggly-integration
+	terraform init
+	terraform apply
+
+	cd ../../..
+}
+
 update_all() {
 	update_gke
 
 	update_dns
 
 	update_system
-	
+
 	update_apps
-	
+
 	update_scanners
+
+  update_integrations
 }
 
 
@@ -185,6 +198,10 @@ case $COMMAND in
 		update_system
 		exit 0
 		;;
+  update_integrations)
+		update_integrations
+		exit 0
+		;;
 	update_dns)
 		update_dns
 		exit 0
@@ -198,4 +215,3 @@ case $COMMAND in
 		exit 1
 		;;
 esac
-

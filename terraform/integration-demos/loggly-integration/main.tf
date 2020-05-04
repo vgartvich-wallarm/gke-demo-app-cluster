@@ -1,6 +1,6 @@
 
-resource "helm_release" "log-integration-tiredful-api" {
-  name  = "tf-log-integration-tiredful-api"
+resource "helm_release" "loggly-integration-tiredful-api" {
+  name  = "tf-loggly-integration-tiredful-api"
   chart = "log-integration"
 
   set_string {
@@ -15,22 +15,22 @@ resource "helm_release" "log-integration-tiredful-api" {
 
   set_string {
     name  = "wallarm_api"
-    value = "us1.api.wallarm.com"
+    value = var.api_host
   }
 
   set_string {
     name  = "image"
-    value = "awallarm/log-exporter:latest"
+    value = "vgartvichwallarm/wallarm-api-examples"
   }
 
   set_sensitive {
     name  = "wallarm_uuid"
-    value = var.loggly_wallarm_uuid
+    value = var.wallarm_api_uuid
   }
 
   set_sensitive {
     name  = "wallarm_secret"
-    value = var.loggly_wallarm_secret
+    value = var.wallarm_api_secret
   }
 
   set_sensitive {
