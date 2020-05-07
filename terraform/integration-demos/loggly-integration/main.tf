@@ -1,7 +1,7 @@
 
 resource "helm_release" "loggly-integration-tiredful-api" {
   name  = "tf-loggly-integration-tiredful-api"
-  chart = "log-integration"
+  chart = "loggly-integration"
 
   set_string {
     name  = "pool_id"
@@ -10,7 +10,7 @@ resource "helm_release" "loggly-integration-tiredful-api" {
 
   set_string {
     name  = "schedule"
-    value = "0 * * * *"
+    value = "20 * * * *"
   }
 
   set_string {

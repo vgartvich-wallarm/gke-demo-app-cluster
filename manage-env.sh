@@ -95,6 +95,11 @@ update_apps() {
 	terraform init
 	terraform apply
 
+	log_message INFO "Updating the DVWS configuration..."
+	cd ../dvws
+	terraform init
+	terraform apply
+
 	cd ../../..
 }
 
@@ -198,7 +203,7 @@ case $COMMAND in
 		update_system
 		exit 0
 		;;
-  update_integrations)
+	update_integrations)
 		update_integrations
 		exit 0
 		;;

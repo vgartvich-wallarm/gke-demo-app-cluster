@@ -9,6 +9,11 @@ resource "helm_release" "wordpress" {
     value = "false"
   }
 
+  set_string {
+    name  = "resources.requests.cpu"
+    value = "50m"
+  }
+
   set {
     name  = "ingress.enabled"
     value = "true"

@@ -8,6 +8,16 @@ resource "helm_release" "wallarm-ingress" {
     value = "true"
   }
 
+  set_string {
+    name  = "controller.resources.requests.cpu"
+    value = "30m"
+  }
+
+  set_string {
+    name  = "controller.wallarm.tarantool.resources.requests.cpu"
+    value = "10m"
+  }
+
   set_sensitive {
     name = "controller.wallarm.token"
     value = var.ingress_controller_token

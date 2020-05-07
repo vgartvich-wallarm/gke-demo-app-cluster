@@ -1,7 +1,8 @@
 
 
 pull-kubectl-config:
-	gcloud container clusters get-credentials tf-gke-demo-app-cluster
+	$(eval ZONE=$(shell sh -c "terraform output|cut -f2 -d=")) \
+	gcloud container clusters get-credentials tf-gke-demo-app-cluster --zone=${ZONE}
 
 init:
 	terraform init

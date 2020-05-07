@@ -48,6 +48,11 @@ resource "kubernetes_deployment" "web-grpc" {
           }
 
           env {
+            name  = "DEPLOY_FORCE"
+            value = "true"
+          }
+
+          env {
             name  = "WALLARM_API_HOST"
             value = var.api_host
           }

@@ -6,8 +6,12 @@ provider "google" {
 
 resource "google_container_cluster" "primary" {
   name               = "tf-gke-demo-app-cluster"
-  location           = var.region
+  location           = var.zone
   initial_node_count = 1
+
+  cluster_autoscaling {
+    enabled = false
+  }
 
   master_auth {
     username = ""
@@ -40,9 +44,9 @@ resource "google_container_cluster" "primary" {
 
 resource "google_container_node_pool" "np" {
   name       = "tf-gke-demo-app-cluster-node-pool"
-  location   = var.region
+  location   = var.zone
   cluster    = google_container_cluster.primary.name
-  node_count = var.initial_node_count
+  initial_node_count = var.initial_node_count
 
   node_config {
     preemptible = true
@@ -52,11 +56,15 @@ resource "google_container_node_pool" "np" {
 
   autoscaling {
     min_node_count          = var.min_count
-    max_node_count          = var.min_count
+    max_node_count          = var.max_count
   }
  
   timeouts {
     create = "30m"
     update = "20m"
   }
+}
+
+output "zone" {
+  value = var.zone
 }

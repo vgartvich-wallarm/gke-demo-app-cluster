@@ -126,6 +126,11 @@ resource "kubernetes_deployment" "tf-dvws" {
           name  = "dvws"
           image = "vgartvichwallarm/dvws"
 
+          env {
+            name  = "DVWS_DOMAIN"
+            value = "dvws.${var.dns_zone}"
+          }
+
           port {
             name           = "http"
             container_port = 80

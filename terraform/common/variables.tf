@@ -46,7 +46,7 @@ variable "min_count" {
 variable "max_count" {
   type        = number
   description = "Maximum number of nodes in the NodePool. Must be >= min_node_count."
-  default     = "5"
+  default     = "3"
 }
 
 variable "disk_size_gb" {
@@ -137,4 +137,19 @@ variable "waf_node_tarantool_memory" {
   type        = number
   description = "Amount of memory in GB for request analytics data, recommended value is 75% of the total server memory"
   default     = 0.2
+}
+
+variable "wallarm_api_uuid" {
+  type        = string
+  description = "Wallarm API UUID"
+}
+
+variable "wallarm_api_secret" {
+  type        = string
+  description = "Wallarm API secret"
+}
+
+variable "loggly_collector_address" {
+  type        = string
+  description = "Loggly collector URL for the HTTP receiver"
 }
