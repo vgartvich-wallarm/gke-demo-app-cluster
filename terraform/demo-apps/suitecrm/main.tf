@@ -5,7 +5,7 @@ resource "helm_release" "suitecrm" {
   chart = "suitecrm"
 
   set {
-    name  = "mariadb.master.persistence.enabled"
+    name  = "persistence.enabled"
     value = "false"
   }
 
