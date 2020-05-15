@@ -1,9 +1,9 @@
 
-resource "kubernetes_deployment" "echo-server" {
+resource "kubernetes_deployment" "httpbin" {
   metadata {
-    name = "tf-echo-server"
+    name = "tf-httpbin"
     labels = {
-      app = "tf-echo-server"
+      app = "tf-httpbin"
     }
   }
 
@@ -12,22 +12,22 @@ resource "kubernetes_deployment" "echo-server" {
 
     selector {
       match_labels = {
-        app = "tf-echo-server"
+        app = "tf-httpbin"
       }
     }
 
     template {
       metadata {
         labels = {
-          app = "tf-echo-server"
+          app = "tf-httpbin"
         }
       }
 
       spec {
         container {
-          image = "gcr.io/google-containers/echoserver:1.10"
-          name  = "echo-server"
-          args = ["--port=8080", "--expose" ]
+          image = "kennethreitz/httpbin"
+          name  = "httpbin"
+          image_pull_policy = "IfNotPresent"
 
           resources {
             limits {
@@ -43,30 +43,28 @@ resource "kubernetes_deployment" "echo-server" {
   }
 }
 
-resource "kubernetes_service" "tf-echo-server" {
+resource "kubernetes_service" "tf-httpbin" {
   metadata {
-    name = "tf-echo-server"
+    name = "tf-httpbin"
   }
   spec {
     selector = {
-      app = "tf-echo-server"
+      app = "tf-httpbin"
     }
     port {
       port        = 80
-      target_port = 8080
+      target_port = 80
     }
   }
 }
 
-resource "kubernetes_ingress" "echo-server" {
+resource "kubernetes_ingress" "nginx" {
   metadata {
-    name = "tf-echo-server"
+    name = "tf-httpbin"
     annotations = {
        "kubernetes.io/ingress.class" = "wallarm-ingress"
        "nginx.ingress.kubernetes.io/wallarm-mode" = "$wallarm_mode_real"
-       "nginx.ingress.kubernetes.io/wallarm-acl" = "on"
-       "nginx.ingress.kubernetes.io/wallarm-instance" = "8"
-       "nginx.ingress.kubernetes.io/proxy-body-size" = "500m"
+       "nginx.ingress.kubernetes.io/wallarm-instance" = "1"
        "cert-manager.io/issuer" = "letsencrypt-prod"
        "nginx.ingress.kubernetes.io/ssl-redirect" = "false"
     }
@@ -74,20 +72,21 @@ resource "kubernetes_ingress" "echo-server" {
 
   spec {
     backend {
-      service_name = "tf-echo-server"
+      service_name = "tf-httpbin"
       service_port = 80
     }
+
     tls {
-      hosts = [ "echo-server.${var.dns_zone}" ]
-      secret_name = "echo-server-tls"
+      hosts = [ "httpbin.${var.dns_zone}" ]
+      secret_name = "httpbin-tls"
     }
 
     rule {
-      host = "echo-server.${var.dns_zone}"
+      host = "httpbin.${var.dns_zone}"
       http {
         path {
           backend {
-            service_name = "tf-echo-server"
+            service_name = "tf-httpbin"
             service_port = 80
           }
           path = "/"
