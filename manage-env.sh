@@ -162,6 +162,11 @@ update_integrations() {
 	terraform init
 	terraform apply
 
+	log_message INFO "Update the Splunk demo deployment..."
+	cd ../splunk
+	terraform init
+	terraform apply
+
 	cd ../../..
 }
 
