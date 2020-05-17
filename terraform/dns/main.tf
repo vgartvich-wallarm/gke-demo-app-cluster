@@ -12,3 +12,7 @@ resource "google_dns_managed_zone" "demo_wallarm_com_dns_zone" {
 output "dns_servers" {
   value = "${google_dns_managed_zone.demo_wallarm_com_dns_zone.name_servers}"
 }
+
+output "google_dns_managed_zone_name" {
+  value = "${google_dns_managed_zone.demo_wallarm_com_dns_zone.name}"
+}

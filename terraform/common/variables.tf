@@ -153,3 +153,27 @@ variable "loggly_collector_address" {
   type        = string
   description = "Loggly collector URL for the HTTP receiver"
 }
+
+variable "ssh_username" {
+  type        = string
+  description = "The admin username to be created on newly provisioned Linux servers"
+  default     = "admin"
+}
+
+variable "ssh_pub_key_file" {
+  type        = string
+  description = "The location of local SSH public keys file"
+  default     = "~/.ssh/id_rsa.pub"
+}
+
+variable "ssh_private_key_file" {
+  type        = string
+  description = "The location of local SSH private keys file"
+  default     = "~/.ssh/id_rsa"
+}
+
+variable "wallarm_gcp_node_image" {
+  type        = string
+  description = "The Wallarm node GCP image"
+  default     = "wallarm-node-195710/wallarm-node-2-14-7-1-19632-build"
+}
