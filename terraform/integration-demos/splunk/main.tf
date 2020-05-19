@@ -12,6 +12,10 @@ provider "google" {
   zone    = var.zone
 }
 
+resource "google_compute_address" "splunk_ip_address" {
+  name = "tf-splunk"
+}
+
 resource "google_compute_instance" "splunk" {
  name         = "tf-splunk"
  machine_type = var.splunk_machine_type
@@ -31,7 +35,7 @@ resource "google_compute_instance" "splunk" {
    network = "default"
 
    access_config {
-     // Include this section to give the VM an external ip address
+     nat_ip = google_compute_address.splunk_ip_address.address
    }
  }
 
@@ -41,12 +45,15 @@ apt-get install less wget tcpdump -y
 wget -O splunk-8.0.3-a6754d8441bf-linux-2.6-amd64.deb 'https://www.splunk.com/bin/splunk/DownloadActivityServlet?architecture=x86_64&platform=linux&version=8.0.3&product=splunk&filename=splunk-8.0.3-a6754d8441bf-linux-2.6-amd64.deb&wget=true'
 dpkg -i splunk-8.0.3-a6754d8441bf-linux-2.6-amd64.deb
 /usr/share/wallarm-common/addnode --force  -u ${var.waf_node_deploy_username} -p ${var.waf_node_deploy_password} -H ${var.api_host} --batch
+echo "SLAB_ALLOC_ARENA=0.2" > /etc/default/wallarm-tarantool
+systemctl restart wallarm-tarantool
 
 cat << SPLUNKUI > /etc/nginx/conf.d/wallarm-splunk-ui.conf
 server {
       listen 80;
 
       server_name splunk.${var.dns_zone};
+      client_max_body_size 10M;
 
       # turn on the monitoring mode of traffic processing
       wallarm_mode block;
@@ -67,9 +74,10 @@ server {
       listen 88;
 
       server_name splunk.${var.dns_zone};
+      client_max_body_size 10M;
 
       # turn on the monitoring mode of traffic processing
-      wallarm_mode block;
+      wallarm_mode off;
       wallarm_instance 11;
 
       location / {
