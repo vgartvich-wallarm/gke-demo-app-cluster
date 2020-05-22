@@ -24,6 +24,7 @@ resource "google_compute_instance" "splunk" {
  boot_disk {
    initialize_params {
      image = var.wallarm_gcp_node_image
+     size = 20 
    }
  }
 
