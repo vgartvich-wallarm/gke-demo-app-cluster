@@ -5,6 +5,7 @@ provider "wallarm" {
   api_uuid = "${var.wallarm_api_uuid}"
   api_secret = "${var.wallarm_api_secret}"
   api_host = "${var.api_host}"
+  client_id = var.wallarm_client_id
 }
 
 # 
@@ -15,7 +16,7 @@ resource "wallarm_rule_vpatch" "splunk" {
 
   action {
     type = "iequal"
-    value = "splunk.wallarm-demo.com:88"
+    value = "splunk.${var.dns_zone}:88"
     point = {
       header = "HOST"
     }
@@ -90,7 +91,7 @@ resource "wallarm_rule_regex" "regex_curltool" {
 
   action {
     type = "iequal"
-    value = "tiredful-api.wallarm-demo.com"
+    value = "tiredful-api.${var.dns_zone}"
     point = {
       header = "HOST"
     }
@@ -236,7 +237,7 @@ resource "wallarm_rule_mode" "dvwa_mode" {
 
   action {
     type = "equal"
-    value = "dvwa.wallarm-demo.com"
+    value = "dvwa.${var.dns_zone}"
     point = {
       header = "HOST"
     }

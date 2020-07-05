@@ -177,3 +177,8 @@ variable "wallarm_gcp_node_image" {
   description = "The Wallarm node GCP image"
   default     = "wallarm-node-195710/wallarm-node-2-14-7-1-19632-build"
 }
+
+variable "wallarm_client_id" {
+  type        = number
+  description = "Wallarm customer account ID defined by tenant"
+}
