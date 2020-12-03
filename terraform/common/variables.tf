@@ -182,3 +182,9 @@ variable "wallarm_client_id" {
   type        = number
   description = "Wallarm customer account ID defined by tenant"
 }
+
+variable "gcp_gke_version" {
+  type        = string
+  description = "The min version of GKE masters"
+  default     = "1.16.13-gke.401"
+}

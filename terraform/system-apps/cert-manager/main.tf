@@ -13,7 +13,7 @@ data "helm_repository" "jetstack" {
 resource "helm_release" "cert-manager" {
   name  = "tf-cert-manager"
   chart = "cert-manager"
-  version    = "0.14.2"
+  version    = "1.0.1"
   repository = data.helm_repository.jetstack.metadata[0].name
   depends_on = [helm_release.cert-manager-crds]
 }

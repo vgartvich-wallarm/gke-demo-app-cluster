@@ -100,6 +100,11 @@ update_apps() {
 	terraform init
 	terraform apply
 
+	log_message INFO "Updating the HTTPBIN configuration..."
+	cd ../httpbin
+	terraform init
+	terraform apply
+
 	cd ../../..
 }
 

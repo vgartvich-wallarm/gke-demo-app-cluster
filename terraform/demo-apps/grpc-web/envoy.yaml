@@ -124,9 +124,9 @@ static_resources:
               file_check_interval:
                 60000 # milliseconds
               acls:
-                acl0:
-                  path: acl0
-                  mapsize: 1000000
+              - name: acl0
+                path: acl0
+                mapsize: 1000000
               loader_log_mask: "all"
               worker_log_mask: "all"
           - name: envoy.router

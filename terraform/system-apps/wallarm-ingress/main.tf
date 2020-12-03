@@ -1,7 +1,7 @@
 
 resource "helm_release" "wallarm-ingress" {
   name  = "tf-wallarm-ingress"
-  chart = "wallarm-ingress"
+  chart = "ingress-chart-2.16"
 
   set {
     name  = "controller.wallarm.enabled"
@@ -50,7 +50,7 @@ resource "helm_release" "wallarm-ingress" {
 
   set_string {
     name = "controller.config.server-snippet"
-    value = "set_real_ip_from 10.0.0.0/8;"
+    value = "set_real_ip_from 10.0.0.0/8; wallarm_enable_libdetection on; proxy_request_buffering on;"
   }
 
   set_string {

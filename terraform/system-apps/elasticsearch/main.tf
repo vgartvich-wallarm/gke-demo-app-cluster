@@ -58,3 +58,44 @@ resource "kubernetes_ingress" "kibana" {
     }
   }
 }
+
+resource "kubernetes_ingress" "es" {
+  metadata {
+    name = "tf-es"
+    annotations = {
+       "kubernetes.io/ingress.class" = "wallarm-ingress"
+       "nginx.ingress.kubernetes.io/wallarm-mode" = "off"
+       "nginx.ingress.kubernetes.io/wallarm-instance" = "1"
+       "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
+       "cert-manager.io/issuer" = "letsencrypt-prod"
+       "nginx.ingress.kubernetes.io/auth-type" = "basic"
+       "nginx.ingress.kubernetes.io/auth-secret" = "tf-prometheus-basic-auth"
+       "nginx.ingress.kubernetes.io/auth-realm" = "Authentication Required"
+    }
+  }
+
+  spec {
+    backend {
+      service_name = "tf-es"
+      service_port = 80
+    }
+    tls {
+      hosts = [ "es.${var.dns_zone}" ]
+      secret_name = "es-tls"
+    }
+
+    rule {
+      host = "es.${var.dns_zone}"
+      http {
+        path {
+          backend {
+            service_name = "tf-elasticsearch-elasticsearch-data"
+            service_port = 9300
+          }
+          path = "/"
+        }
+      }
+    }
+  }
+}
+

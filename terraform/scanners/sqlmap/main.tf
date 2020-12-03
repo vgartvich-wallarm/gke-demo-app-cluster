@@ -10,7 +10,7 @@ resource "helm_release" "sqlmap-dvwa" {
 
   set_string {
     name  = "schedule"
-    value = "5 */4 * * *"
+    value = "5 4 */2 * *"
   }
 
   set_string {
@@ -30,7 +30,7 @@ resource "helm_release" "sqlmap-suitecrm" {
 
   set_string {
     name  = "schedule"
-    value = "22 */3 * * *"
+    value = "22 13 */2 * *"
   }
 
   set_string {
@@ -51,7 +51,7 @@ resource "helm_release" "sqlmap-grafana" {
 
   set_string {
     name  = "schedule"
-    value = "44 */4 * * *"
+    value = "44 21 */3 * *"
   }
 
   set_string {

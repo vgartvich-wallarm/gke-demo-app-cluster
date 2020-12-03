@@ -35,7 +35,8 @@ resource "kubernetes_deployment" "web-grpc" {
 
         container {
           name  = "web-grpc-envoy"
-          image = "wallarm/envoy"
+          image = "wallarm/envoy:latest"
+          # image = "wallarm/envoy:2.15.2-2"
           port {
             name           = "http"
             container_port = 8080

@@ -65,6 +65,7 @@ resource "kubernetes_ingress" "nginx" {
        "kubernetes.io/ingress.class" = "wallarm-ingress"
        "nginx.ingress.kubernetes.io/wallarm-mode" = "$wallarm_mode_real"
        "nginx.ingress.kubernetes.io/wallarm-instance" = "1"
+       "nginx.ingress.kubernetes.io/configuration-snippet" = "more_set_input_headers 'VICTORTEST $remote_addr';"
     }
   }
 

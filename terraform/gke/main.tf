@@ -8,6 +8,7 @@ resource "google_container_cluster" "primary" {
   name               = "tf-gke-demo-app-cluster"
   location           = var.zone
   initial_node_count = 1
+  min_master_version = var.gcp_gke_version
 
   cluster_autoscaling {
     enabled = false
