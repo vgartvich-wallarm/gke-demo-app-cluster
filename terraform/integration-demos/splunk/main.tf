@@ -59,6 +59,8 @@ server {
       # turn on the monitoring mode of traffic processing
       wallarm_mode block;
       wallarm_instance 11;
+      wallarm_enable_libdetection on;
+      proxy_request_buffering on;
 
       location / {
         # setting the address for request forwarding
@@ -78,8 +80,10 @@ server {
       client_max_body_size 10M;
 
       # turn on the monitoring mode of traffic processing
-      wallarm_mode off;
+      wallarm_mode monitoring;
       wallarm_instance 11;
+      wallarm_enable_libdetection on;
+      proxy_request_buffering on;
 
       location / {
         # setting the address for request forwarding

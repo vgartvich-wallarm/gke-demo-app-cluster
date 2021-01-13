@@ -175,7 +175,7 @@ variable "ssh_private_key_file" {
 variable "wallarm_gcp_node_image" {
   type        = string
   description = "The Wallarm node GCP image"
-  default     = "wallarm-node-195710/wallarm-node-2-14-7-1-19632-build"
+  default     = "wallarm-node-195710/wallarm-node-2-16-0-7-19797-build"
 }
 
 variable "wallarm_client_id" {
