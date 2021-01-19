@@ -39,7 +39,7 @@ resource "kubernetes_deployment" "tf-dvws" {
         # This container runs a Wallarm WAF node as a sidecar
         container {
           name  = "wallarm"
-          image = "wallarm/node:2.16.0-2"
+          image = "wallarm/node:2.16.0-6"
 
           port {
             name           = "http"
