@@ -1,7 +1,8 @@
 
 resource "helm_release" "wallarm-ingress" {
   name  = "tf-wallarm-ingress"
-  chart = "ingress-chart-2.16"
+  chart = "ingress-chart-2.18.1/ingress-chart/wallarm-ingress"
+  force_update = true
 
   set {
     name  = "controller.wallarm.enabled"
