@@ -63,8 +63,8 @@ resource "kubernetes_ingress" "echo-server" {
     name = "tf-echo-server"
     annotations = {
        "kubernetes.io/ingress.class" = "wallarm-ingress"
-       "nginx.ingress.kubernetes.io/wallarm-mode" = "$wallarm_mode_real"
-       "nginx.ingress.kubernetes.io/wallarm-acl" = "on"
+       "nginx.ingress.kubernetes.io/wallarm-mode" = "$wallarm_mode_monitoring"
+       "nginx.ingress.kubernetes.io/wallarm-acl" = "off"
        "nginx.ingress.kubernetes.io/wallarm-instance" = "8"
        "nginx.ingress.kubernetes.io/proxy-body-size" = "500m"
        "cert-manager.io/issuer" = "letsencrypt-prod"

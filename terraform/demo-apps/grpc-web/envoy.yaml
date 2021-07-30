@@ -32,7 +32,7 @@ static_resources:
                 wallarm:
                   "@type": type.googleapis.com/wallarm.WallarmConf
                   instance: 2 # mark everything within this VHost as instance 2
-                  acl: acl0 # use acl0 within this VHost
+                  # acl: acl0 # use acl0 within this VHost
               domains:
               - "*"
               routes:
@@ -54,14 +54,14 @@ static_resources:
               ########################################
               # wallarm ACL api route and configuration
               ########################################
-              - match:
-                  prefix: "/acl"
-                route:
-                  cluster: default
-                typed_per_filter_config:
-                  wallarm:
-                    "@type": type.googleapis.com/wallarm.WallarmConf
-                    acl_api: true
+              #- match:
+              #    prefix: "/acl"
+              #  route:
+              #    cluster: default
+              #  typed_per_filter_config:
+              #    wallarm:
+              #      "@type": type.googleapis.com/wallarm.WallarmConf
+              #      acl_api: true
               ##########################################
               # default route, if nothing matched above
               ##########################################
@@ -123,10 +123,10 @@ static_resources:
                 cache
               file_check_interval:
                 60000 # milliseconds
-              acls:
-              - name: acl0
-                path: acl0
-                mapsize: 1000000
+#              acls:
+#              - name: acl0
+#                path: acl0
+#                mapsize: 1000000
               loader_log_mask: "all"
               worker_log_mask: "all"
           - name: envoy.router

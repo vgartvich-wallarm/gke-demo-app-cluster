@@ -1,7 +1,7 @@
 
 resource "helm_release" "wallarm-ingress" {
   name  = "tf-wallarm-ingress"
-  chart = "ingress-chart-2.18.1/ingress-chart/wallarm-ingress"
+  chart = "ingress-chart-3.0/ingress-chart/wallarm-ingress"
   force_update = true
 
   set {
@@ -51,7 +51,7 @@ resource "helm_release" "wallarm-ingress" {
 
   set_string {
     name = "controller.config.server-snippet"
-    value = "set_real_ip_from 10.0.0.0/8; wallarm_enable_libdetection on; proxy_request_buffering on;"
+    value = "set_real_ip_from 0.0.0.0/0; wallarm_enable_libdetection on; proxy_request_buffering on;"
   }
 
   set_string {
@@ -61,12 +61,12 @@ resource "helm_release" "wallarm-ingress" {
 
   set {
     name = "controller.metrics.enabled"
-    value = "true"
+    value = "false"
   }
 
   set {
     name = "controller.stats.enabled"
-    value = "true"
+    value = "false"
   }
 
   set_string {
@@ -81,12 +81,12 @@ resource "helm_release" "wallarm-ingress" {
 
   set {
     name = "controller.wallarm.metrics.enabled"
-    value = "true"
+    value = "false"
   }
 
   set {
     name = "controller.metrics.serviceMonitor.enabled"
-    value = "true"
+    value = "false"
   }
 
   set_string {
